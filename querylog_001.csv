@@ -1,0 +1,9 @@
+query_id,user_id,query_text,event_time,device,result_count,response_time_ms
+q001,u001,How to use Spark Streaming with Scala?,2026-05-01T09:00:05Z,desktop,12,180
+q002,u002,Pig Latin UDF!!!,2026-05-01T09:00:08Z,mobile,5,240
+q003,u003,Hadoop MapReduce example??,2026-05-01T09:00:11Z,tablet,0,310
+q004,u001,Spark Streaming Scala,2026-05-01T09:00:18Z,desktop,15,160
+q005,u004,What is Spark Streaming?,2026-05-01T09:00:20Z,mobile,10,220
+q006,u005,Apache Hive tutorial,2026-05-01T09:00:25Z,desktop,8,190
+q013,u003,Hadoop MapReduce example,2026-05-01T09:00:29Z,mobile,2,520
+q014,u012,Slow database query,2026-05-01T09:00:30Z,desktop,3,610

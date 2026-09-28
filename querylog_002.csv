@@ -1,0 +1,11 @@
+query_id,user_id,query_text,event_time,device,result_count,response_time_ms
+q007,u006,pig latin udf,2026-05-01T09:00:35Z,mobile,6,200
+q008,u007,Spark streaming with Scala tutorial,2026-05-01T09:00:40Z,tablet,11,170
+q009,u008,Apache Hive Tutorial!,2026-05-01T09:00:42Z,desktop,7,210
+q010,u009,Kafka Streaming,2026-05-01T09:00:45Z,mobile,4,260
+q011,u010,Hadoop MapReduce example,2026-05-01T09:00:50Z,desktop,0,350
+q012,u011,How can you use Kafka streaming?,2026-05-01T09:00:55Z,mobile,5,280
+q015,u010,Hadoop MapReduce example,2026-05-01T09:00:57Z,desktop,1,720
+q016,u013,Slow database query,2026-05-01T09:00:58Z,tablet,2,490
+q017,u014,Slow database query,2026-05-01T09:00:59Z,mobile,4,530
+
