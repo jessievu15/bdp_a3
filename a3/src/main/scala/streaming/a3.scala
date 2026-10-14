@@ -90,8 +90,42 @@ object a3 {
       }
     }
 
-    ssc.start()
-    ssc.awaitTermination()
+    // Task 3
+    val updateFunc = (newValues: Seq[Int], oldState: Option[(Int, Int, Int)]) => {
+      val curr_count = newValues.sum
+      val prev_count = oldState.map(_._3).getOrElse(0)
+      val acc_count  = prev_count + curr_count
+      Some((curr_count, prev_count, acc_count))
+    }
+
+    val state = batch_count.updateStateByKey(updateFunc)
+
+    var task3count = 0
+    state.foreachRDD { batch =>
+      val newData = !batch.filter { case (_, (curr, _, _)) => curr > 0 }.isEmpty()
+
+      if (newData) {
+        task3count += 1
+
+        val top10 = batch
+          .sortBy { case (q, (curr, _, acc)) => (-acc, -curr, q) }
+          .take(10)
+          .map { case (q, (curr, prev, acc)) =>
+            val trend =
+              if (prev == 0) "NEW"
+              else if (curr > 0) "INCREASED"
+              else "UNCHANGED"
+            s"$q,$curr,$prev,$acc,${acc - prev},$trend"
+          }
+
+        batch.sparkContext
+          .parallelize(top10, 1)
+          .saveAsTextFile(f"${args(1)}/task3-$task3count%03d")
+      }
+    }
+      ssc.start()
+      ssc.awaitTermination()
   }
 }
+
 
