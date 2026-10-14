@@ -11,19 +11,18 @@ object a3 {
     }
 
     // Create the context with a 3 seconds batch size
-    val sparkConf = new SparkConf().setAppName("a3").setMaster("local[*]")
+    val sparkConf = new SparkConf().setAppName("a3")
     val ssc = new StreamingContext(sparkConf, Seconds(3))
 
     // Text processing
     val lines = ssc.textFileStream(args(0))
     // Skip header
-    val records = lines.filter(line =>
-      !line.startsWith("query_id"))
+    val records = lines.filter(line => !line.startsWith("query_id"))
     // Stop words set
     val stopWords = Set("the", "and", "for", "with", "how", "what", "why", "can", "you", "use", "using")
     val cleaned = records.flatMap { line =>
       val fields = line.split(",", -1)
-      if (fields.length < 6) {
+      if (fields.length < 7) {
         None
       } else {
         val cleaned_query = fields(2)
@@ -34,7 +33,6 @@ object a3 {
           .filter(term => term.length >= 3)
           .filter(term => !stopWords.contains(term))
           .mkString(" ")
-        fields :+ cleaned_query
         if (cleaned_query.isEmpty) None else Some(fields :+ cleaned_query)
       }
   }
@@ -59,7 +57,7 @@ object a3 {
     val slow_records = cleaned.flatMap{ record =>
       val response_time = record(6).trim.toLong
       if (response_time > threshold) {
-        Some(record.last, (response_time, record(1))) // (cleaned_query, (response_time, user_id))
+        Some((record.last, (response_time, record(1)))) // (cleaned_query, (response_time, user_id))
       } else {
         None
       }
@@ -86,9 +84,41 @@ object a3 {
           .saveAsTextFile(f"${args(1)}/task2-$batchNo2%03d")
         batchNo2 += 1
       }
-
-
     }
+
+    // Task 3: Advanced Stateful Trending Query Analysis
+    val updateFunction = (newValues:Seq[Int], oldState:Option[(Int, Int, Int, Int, String)]) => {
+      val currentCount = newValues.sum
+      val previous_accumulated_count = oldState.map(_._3).getOrElse(0)
+      val accumulated_count = currentCount + previous_accumulated_count
+      val count_change = accumulated_count - previous_accumulated_count
+      val trend_status =
+        if (oldState.isEmpty) "NEW"
+        else if (previous_accumulated_count < accumulated_count) "INCREASED"
+        else "UNCHANGED"
+      Some((currentCount, previous_accumulated_count, accumulated_count, count_change, trend_status))
+    }
+
+    ssc.checkpoint("/s2113758/checkpoint")
+
+    val trending = current_batch_count.updateStateByKey[(Int, Int, Int, Int, String)](updateFunction)
+
+    var batchNo3 = 1
+    trending.foreachRDD{ (rdd, _) =>
+      val newData = !rdd.filter { case(_, s) => s._1 > 0}.isEmpty()
+      if (newData && !rdd.isEmpty()) {
+        rdd
+          .sortBy{case (query, s) => (-s._3, -s._1, query)}
+          .zipWithIndex()
+          .filter{case(_, idx) => idx < 10}
+          .map{case ((query, (currentCount, previous_accumulated_count, accumulated_count, count_change, trend_status)), _) =>
+          s"$query,$currentCount,$previous_accumulated_count,$accumulated_count,$count_change,$trend_status"}
+          .coalesce(1)
+          .saveAsTextFile(f"${args(1)}/task3-$batchNo3%03d")
+        batchNo3 += 1
+      }
+    }
+
     ssc.start()
     ssc.awaitTermination()
 

@@ -10,8 +10,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f798a860-2549-434c-b6f0-b3872d7e74bd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/a3_jar/a3.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/a3_jar/a3.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/streaming/a3.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/streaming/a3.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../task3/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../task3/.idea/artifacts/task3_jar.xml" beforeDir="false" />
