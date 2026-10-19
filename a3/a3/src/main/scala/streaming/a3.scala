@@ -124,11 +124,3 @@ object a3 {
     ssc.awaitTermination()
   }
 }
-
-
-// hadoop fs -rm -f -r /output
-// hadoop fs -mkdir /input
-// hadoop fs -mkdir /output
-// hadoop fs -put -f querylog_001.csv /input
-// hadoop fs -put -f querylog_002.csv /input
-// spark-submit --class streaming.a3 --master yarn --deploy-mode client a3.jar hdfs:///input hdfs:///output 250
